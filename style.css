@@ -49,7 +49,7 @@ body{
     margin: 5px;
     padding: 20px;
     cursor: pointer;
-    box-shadow: 1px 1px 1px gray;
+    box-shadow: 1px 1px 1px gray; 
 }
 
 .container-screen{
@@ -61,6 +61,7 @@ body{
     color: #094770;
     font-size: 36px;
     font-weight: bold;
+    height: 36px;
 }
 
 .container-operation{
