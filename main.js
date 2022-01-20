@@ -45,11 +45,11 @@ function addNumbers(){
     number.addEventListener("click", () => {
       if(addSecondValue == false){
         screenValueA += number.textContent; 
-        operationScreen.textContent += number.textContent; 
+        resultScreen.textContent += number.textContent; 
       }
       else{
         screenValueB += number.textContent;
-        operationScreen.textContent += number.textContent; 
+        resultScreen.textContent += number.textContent; 
       }
     })
   })
@@ -72,20 +72,23 @@ operationBtn.forEach((operation) => {
     addSecondValue = true;
     if(operation.textContent == "/"){
       mathOperation = divide;
-      operationScreen.textContent += " / "; 
+      //resultScreen.textContent += " / "; 
     }
     else if(operation.textContent == "x"){
       mathOperation = multiply;
-      operationScreen.textContent += " x ";
+      //resultScreen.textContent += " x ";
     }
     else if(operation.textContent == "-"){
       mathOperation = rest;
-      operationScreen.textContent += " - ";
+      //resultScreen.textContent += " - ";
     }
     else if(operation.textContent == "+"){
       mathOperation = sum;
-      operationScreen.textContent += " + ";
+      //resultScreen.textContent += " + ";
     }
+    console.log(resultScreen.textContent);
+    numberA = parseInt(resultScreen.textContent);
+    resultScreen.textContent = ""; 
   })
 })
 
@@ -101,4 +104,15 @@ result.addEventListener("click", () => {
   screenValueA = ""; screenValueB = ""; //Restart
 
   resultScreen.textContent = result;
+  console.log(resultScreen.textContent);
+})
+
+let cleanBtn = document.querySelector("div.button-clean");
+
+cleanBtn.addEventListener("click", () => {
+  screenValueA = "";
+  screenValueB = "";
+  numberA = 0;
+  numberB = 0;
+  resultScreen.textContent = "";
 })
