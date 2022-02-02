@@ -1,118 +1,150 @@
-// Operations on a simple calculator
+// Module with math operations (sum, rest, multiply, div, and get percentage of a number)
 
-function sum(a, b){
-    return a + b;
+const calculator = (() => {
+  const add = (a, b) => a + b;
+  const sub = (a, b) => a - b;
+  const mul = (a, b) => a * b;
+  const div = (a, b) => a / b;
+  const percentage = (a, per) => (a / 100) * per;
+
+  return{
+    add,
+    sub,
+    mul,
+    div,
+    percentage
+  }
+
+})();
+
+// This function take all the methods above and ejecute based in user selection
+
+function operate(operation, a, b) {
+  switch(operation){
+    case "add":
+      return calculator.add(a, b);
+    case "sub":
+      return calculator.sub(a, b);
+    case "mul":
+      return calculator.mul(a, b);
+    case "div":
+      return calculator.div(a, b);
+    case "per":
+      return calculator.percentage(a, b);
+  }
 }
 
-function rest(a, b){
-    return a - b;
-}
+// DOM:
+// Buttons:
+const screen = document.querySelector(".container-result");
+const numbers = document.querySelectorAll("div.container-buttons > div.number");
+const operations = document.querySelectorAll("div.container-buttons > div.button-operation")
+// Others:
+const clean = document.querySelector(".button-clean");
+const delet = document.querySelector(".delete");
 
-function multiply(a, b){
-    return a * b;
-}
+// Add numbers on screen:
 
-function divide(a, b){
-    return a / b;
-}
+let screenA = ""; // Store clicked numbers, if click then screenA += number;
+let screenB = ""; // Same idea;
 
-// Operate function:
+let fill = false;
+let weHaveResult = false;
 
-function operate(operation, a, b){
-    return operation(a, b);
-}
+let opt = "";
 
-// UI
+let x;
+let y;
 
-// Operation container
-let operationScreen = document.querySelector("div.operation");
-//console.log(operationScreen);
-let resultScreen = document.querySelector("div.result");
-//console.log(resultScreen);
-
-// Numerical buttons function:
-// Create a 0-1 variable, if 0 then add numbers to screenValueA, else if 1 then add numbers to screenValueB
-// The 0-1 variable is about to change when user click in the operation buttons
-let numButtons = document.querySelectorAll("div.container-buttons > div.number");
-
-let screenValueA = ""; // This variable will have the numerical values we click
-let screenValueB = "";
-
-let addSecondValue = false; 
- 
 function addNumbers(){
-  numButtons.forEach((number) => {
-    number.addEventListener("click", () => {
-      if(addSecondValue == false){
-        screenValueA += number.textContent; 
-        resultScreen.textContent += number.textContent; 
-      }
-      else{
-        screenValueB += number.textContent;
-        resultScreen.textContent += number.textContent; 
-      }
+  
+  const emptScreen = () => screen.textContent = "";
+
+  operations.forEach((operation) => {
+    operation.addEventListener("click", () => {
+      screen.textContent = "";
+      opt = operation.textContent;
+      fill = true;
     })
   })
+
+  numbers.forEach((number)  => {
+    number.addEventListener("click", () => {
+      if(weHaveResult == false && fill == false){
+        screen.textContent += number.textContent;
+        screenA = screen.textContent.trim();
+        x = parseInt(screenA);
+      }
+      else if(weHaveResult == false && fill == true){
+        screen.textContent += number.textContent;
+        screenB = screen.textContent.trim();
+        y = parseInt(screenB);
+      }
+      else if(weHaveResult == true && fill == true){
+        screen.textContent += number.textContent;
+        screenB = screen.textContent.trim();
+        y = parseInt(screenB);
+      }
+      else if(weHaveResult == true && fill == false){
+        screen.textContent = "";
+        screen.textContent += number.textContent; 
+        weHaveResult = false;
+      }
+    })
+  }) 
 }
-
-// Numbers to operate 
-let numberA = 0;
-let numberB = 0;
-//Operation
-let mathOperation = "";
-// Operation buttons
-
-let operationBtn = document.querySelectorAll("div.container-buttons > div.button-operation");
 
 addNumbers();
 
-operationBtn.forEach((operation) => {
-  operation.addEventListener("click", () => { 
-    numberA = parseInt(screenValueA);
-    addSecondValue = true;
-    if(operation.textContent == "/"){
-      mathOperation = divide;
-      //resultScreen.textContent += " / "; 
+const getResult = document.querySelector(".button-result");
+
+let theResult;
+const calculateDOM = (() => {
+  getResult.addEventListener("click", () => {
+    if(opt == "+"){
+      theResult = operate("add", x, y)
+      weHaveResult = true; 
+      fill = false;
+      screen.textContent = operate("add", x, y);
     }
-    else if(operation.textContent == "x"){
-      mathOperation = multiply;
-      //resultScreen.textContent += " x ";
+    else if(opt == "-"){
+      theResult = operate("sub", x, y);
+      weHaveResult = true;
+      fill = false;
+      screen.textContent = operate("sub", x, y);
     }
-    else if(operation.textContent == "-"){
-      mathOperation = rest;
-      //resultScreen.textContent += " - ";
+    else if(opt == "x"){
+      theResult = operate("mul", x, y);
+      weHaveResult = true;
+      fill = false;
+      screen.textContent = operate("mul", x, y);
     }
-    else if(operation.textContent == "+"){
-      mathOperation = sum;
-      //resultScreen.textContent += " + ";
+    else if(opt == "/"){
+      theResult = operate("div", x, y);
+      weHaveResult = true;
+      fill = false;
+      screen.textContent = operate("div", x, y)
     }
-    console.log(resultScreen.textContent);
-    numberA = parseInt(resultScreen.textContent);
-    resultScreen.textContent = ""; 
+    else if(opt == "%"){
+      theResult = operate("per", x, y)
+      weHaveResult = true;
+      fill = false;
+      screen.textContent = operate("per", x, y);
+    }
+    x = theResult;
   })
-})
+})();
 
-let result = document.querySelector("div.button-result");
+// Other Buttons:
 
-result.addEventListener("click", () => {
-  numberB = parseInt(screenValueB);
-
-  let result = operate(mathOperation, numberA, numberB); 
-  
-  operationScreen.textContent = ""; //Restart UI 
-  addSecondValue = false; //Restart screenValueA 
-  screenValueA = ""; screenValueB = ""; //Restart
-
-  resultScreen.textContent = result;
-  console.log(resultScreen.textContent);
-})
-
-let cleanBtn = document.querySelector("div.button-clean");
-
-cleanBtn.addEventListener("click", () => {
-  screenValueA = "";
-  screenValueB = "";
-  numberA = 0;
-  numberB = 0;
-  resultScreen.textContent = "";
-})
+const cleanDelete = (() => {
+  clean.addEventListener("click", () =>{
+    screenA = "";
+    screenB = "";
+    screen.textContent = "";
+    x = 0; y = 0;
+    opt = "";
+    weHaveResult = false;
+    fill = false;
+  })
+})();
